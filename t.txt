@@ -1,0 +1,1 @@
+salvar os encodings no banco de dados
