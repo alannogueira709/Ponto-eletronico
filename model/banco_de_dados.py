@@ -42,7 +42,8 @@ class Banco_de_dados:
         
     def _inserir_usuario(self, usuario):
         # Converte a lista de listas de números para uma string JSON
-        string = self.converte_em_texto(usuario._encoding)
+        print(type(usuario._encoding[0]))
+        string = self.converte_em_texto(usuario._encoding[0]) # alterei coloquei o 0
         self._cursor.execute(    
             f'INSERT INTO {self._tabela_nome} '
             '(nome, encoding) '
@@ -57,8 +58,8 @@ class Banco_de_dados:
             _id, nome, encoding_bd = linha
             # Converte a string JSON de volta para uma lista de listas
             encoding = self.converter_em_array(encoding_bd)
-            usuario = Usuario(nome, encoding)
-        return usuario
+            usuarios.append(Usuario(nome, encoding))
+        return usuarios
         
     def _fechar_conexao(self):
         self._cursor.close()

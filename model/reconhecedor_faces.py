@@ -20,40 +20,27 @@ class ReconhecerFaces:
         
         return False, []
     
+    def encerrar_reconhecimento(self):
+        self._captura_video.release()
+        cv2.destroyAllWindows()
+    
     def reconhecer_faces(self, nomes, rostos):
         self._nomes_salvos = nomes
         self._rostos_salvos = rostos
         while True:
             ret, frame = self._captura_video.read()
-            rgb_frame = frame[:, :, ::-1]
             
             localizacao_rostos = fr.face_locations(frame)
             rostos_desconhecidos = fr.face_encodings(frame, localizacao_rostos)
             
             for (top, right, bottom, left), rosto_desconhecido in zip(localizacao_rostos, rostos_desconhecidos):
-                    # resultados = fr.compare_faces(self._rostos_salvos, rosto_desconhecido)
+                    resultados = fr.compare_faces(self._rostos_salvos, rosto_desconhecido)
+                    face_distances = fr.face_distance(self._rostos_salvos, rosto_desconhecido)
                     
-                    # face_distances = fr.face_distance(self._rostos_salvos, rosto_desconhecido)
+                    maior_id = np.argmin(face_distances)
                     
-                    # maior_id = np.argmin(face_distances)
-                    
-                    # if resultados[maior_id]:
-                    #     nome = self._nomes_salvos[maior_id]
-                    # else:
-                    #     nome = "desconhecido"
-                    if len(self._rostos_salvos) > 0:
-                        resultados = fr.compare_faces(self._rostos_salvos, rosto_desconhecido)
-                        face_distances = fr.face_distance(self._rostos_salvos, rosto_desconhecido)
-                        
-                        if len(face_distances) > 0:
-                            maior_id = np.argmin(face_distances)
-                            
-                            if True in resultados:
-                                nome = self._nomes_salvos[maior_id]
-                            else:
-                                nome = "desconhecido"
-                        else:
-                            nome = "desconhecido"
+                    if resultados[maior_id]:
+                        nome = self._nomes_salvos[maior_id]
                     else:
                         nome = "desconhecido"
                         
@@ -63,7 +50,5 @@ class ReconhecerFaces:
             cv2.imshow("reconhecimento facial", frame)
             
             if cv2.waitKey(1) & 0XFF == ord("q"):
-                break
+                self.encerrar_reconhecimento()
             
-            video_capture.release()
-            cv2.destroyAllWindows()

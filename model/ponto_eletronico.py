@@ -18,22 +18,27 @@ class PontoEletronico:
         
     
     def _listar_usuarios(self):
-        for nome, rosto in self._banco_de_dados.retorna_usuarios():
+        for usuario in self._banco_de_dados.retorna_usuarios():
                 print(f"{usuario._nome}, entrou{type(usuario._encoding)}")
         
         
     def _iniciar_reconhecimento(self):
-        nomes, rostos = self._banco_de_dados.retorna_usuarios()
+        usuarios = self._banco_de_dados.retorna_usuarios()
+        nomes = []
+        rostos = []
+        for usuario in usuarios:
+            nomes.append(usuario._nome)
+            rostos.append(usuario._encoding)
         self._reconhecimento_facial.reconhecer_faces(nomes, rostos)
         
     
 def main():
     pe = PontoEletronico()
-    #pe._cadastrar_Usuario("Adriano", "adriano.jpeg")
-    #pe._cadastrar_Usuario("tony", "tony.jpg")
-    #pe._cadastrar_Usuario("elon", "elon.jpg")
+    # pe._cadastrar_Usuario("Adriano", "pessoas/adriano.jpeg")
+    # pe._cadastrar_Usuario("tony", "pessoas/tony.jpg")
+    # pe._cadastrar_Usuario("elon", "pessoas/elon.jpg")
     pe._listar_usuarios()
-    #pe._iniciar_reconhecimento()
+    pe._iniciar_reconhecimento()
 
     # ele adiciona e exibe usuarios apenas não reconhece a foto
     pe._banco_de_dados._fechar_conexao()
